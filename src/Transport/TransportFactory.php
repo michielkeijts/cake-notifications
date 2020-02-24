@@ -32,15 +32,6 @@ class TransportFactory
     protected static $_registry;
 
     /**
-     * An array mapping url schemes to fully qualified Transport class names
-     *
-     * @var string[]
-     */
-    protected static $_dsnClassMap = [
-        'debug' => 'Cake\Mailer\Transport\DebugTransport',
-    ];
-
-    /**
      * Returns the Transport Registry used for creating and using transport instances.
      *
      * @return \Cake\Mailer\TransportRegistry
@@ -95,9 +86,10 @@ class TransportFactory
      * Get transport instance.
      *
      * @param string $name Config name.
+     * @param array $config (default [])
      * @return \Cake\Transport\AbstractTransport
      */
-    public static function get($name)
+    public static function get($name, array $config = [])
     {
         $registry = static::getRegistry();
 
@@ -105,6 +97,11 @@ class TransportFactory
             return $registry->{$name};
         }
 
+        $config = $config + [
+            'className' => 'CakeNotifications.'.$name
+        ];
+        
+        static::setConfig($name, $config);
         static::_buildTransport($name);
 
         return $registry->{$name};

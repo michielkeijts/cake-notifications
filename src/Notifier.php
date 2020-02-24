@@ -41,8 +41,6 @@ class Notifier {
         $config_key = sprintf('Notifications.Transport.%s', $transport);
         $config = Configure::read($config_key, []);
         
-        TransportFactory::setConfig($transport, $config);
-        
-        return TransportFactory::get($transport);
+        return TransportFactory::get($transport, $config);
     }
 }

@@ -38,7 +38,7 @@ class TransportRegistry extends ObjectRegistry
             return $class;
         }
 
-        $className = App::className($class, 'CakeNotifications/Transport', 'Transport');
+        $className = App::className($class, 'Transport', 'Transport');
 
         return $className;
     }
@@ -55,7 +55,7 @@ class TransportRegistry extends ObjectRegistry
      */
     protected function _throwMissingClassError($class, $plugin)
     {
-        throw new BadMethodCallException(sprintf('Mailer transport %s is not available.', $class));
+        throw new BadMethodCallException(sprintf('Notification transport %s is not available.', $class));
     }
 
     /**

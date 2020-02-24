@@ -46,26 +46,8 @@ class Notification extends Entity
      */
     public function addRecipient(string $address, string $transport)
     {
-        switch (strtolower($transport)) {
-            case 'sms':
-                $class = SMSTransport::class;
-                break;
-            case 'email':
-                $class = EmailTransport::class;
-                break;
-            case 'slack':
-                $class = SlackTransport::class;
-                break;
-            case 'watsapp':
-                $class = WatsappTransport::class;
-                break;
-            /*case 'telegram':
-                $class = TelegramTransport::class;
-                break;*/
-            default :
-                $class=$transport;
-        }
+        $class = ucfirst($transport);
         
-        $this->recipients[] = ['to'=>$address, 'transport'=>$class];
+        $this->recipients[] = ['address'=>$address, 'transport'=>$class];
     }
 }

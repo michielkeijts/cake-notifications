@@ -14,7 +14,9 @@ use Cake\Core\InstanceConfigTrait;
  *
  * @author michiel
  */
-abstract class AbstractTransport extends NotificationTransportInterface {
+abstract class AbstractTransport implements NotificationTransportInterface {
+    use InstanceConfigTrait;
+    
     /**
      * Default config for this class
      *
