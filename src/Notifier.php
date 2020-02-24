@@ -15,30 +15,50 @@ use CakeNotifications\Transport\AbstractTransport;
 
 class Notifier {
    
+    /**
+     * Sends a predefined notification
+     * @param Notification $notification
+     * @param array $options
+     */
     public static function send(Notification $notification, array $options = [])
     {
-        foreach ($notification->recipients as $recipient) {
-            $transport = static::getTransport($recipient['transport']);
+        foreach ($notification->recipients as $transport=>$recipients) {
+            $transport = static::getTransport(ucfirst($transport));
             
-            $transport->send($notification->message, $recipient['address'], $notification);
+            if ($transport->getConfig('sendCombined')) {
+                $transport->send($notification->message, $recipients, $notification);
+                continue;
+            } 
+            
+            foreach ($recipients as $recipient) {
+                $transport->send($notification->message, [$recipient], $notification);
+            }
         }
     }
     
+    /**
+     * Creates a notification
+     * @param string $message
+     * @param array $options
+     * @return Notification
+     */
     public static function create(string $message, array $options = []) : Notification
     {
-        $notification = new Notification([
-            'message'=>$message
-        ]);
+        $notification = new Notification();
+        
+        $notification->message = $message;
         
         return $notification;        
     }
     
     /**
-     * Abstract T
+     * Get the Transport
+     * @param string $transport Needs to be an ucfirst $transport
+     * @return AbstractTransport
      */
     public static function getTransport(string $transport) : AbstractTransport
     {
-        $config_key = sprintf('Notifications.Transport.%s', $transport);
+        $config_key = sprintf('CakeNotifications.Transport.%s', $transport);
         $config = Configure::read($config_key, []);
         
         return TransportFactory::get($transport, $config);

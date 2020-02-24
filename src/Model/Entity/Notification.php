@@ -21,10 +21,13 @@ class Notification extends Entity
     public $message = "";
     public $template = "default";
     public $layout = "default";
-    public $options = [
-        'email_config' => 'default'
+    public $config = [
+        'email' => 'default',
+        'sms' => 'default',
+        'whatsapp' => 'default',
+        'slack' => 'default'
     ];
-    public $subject = "Email Subject";
+    public $subject = "Subject Of Message";
     
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -48,6 +51,10 @@ class Notification extends Entity
     {
         $class = ucfirst($transport);
         
-        $this->recipients[] = ['address'=>$address, 'transport'=>$class];
+        if (!isset($this->recipients[$transport])) {
+            $this->recipients[$transport] = [];
+        }
+        
+        array_push($this->recipients[$transport], $address);
     }
 }

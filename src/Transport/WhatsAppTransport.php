@@ -22,7 +22,7 @@ class WhatsAppTransport extends AbstractTransport {
      * @param string $to 
      * @return bool
      */
-    public function send(Notification $notification, $to) : bool
+    public function send(string $message, array $to, Notification $notification = null) : bool
     {
         throw new \Cake\Http\Exception\NotImplementedException("Sorry. Not yet implemented");
     } 

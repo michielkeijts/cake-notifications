@@ -20,9 +20,15 @@ abstract class AbstractTransport implements NotificationTransportInterface {
     /**
      * Default config for this class
      *
+     *  'sendCombined' => TRUE
+     * Some transports make it easier to send as one, for example, one sms.
+     * Email is preferred to be send individually
+     * 
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected $_defaultConfig = [
+        'sendCombined' => FALSE
+    ];
 
     /**
      * Constructor
@@ -41,8 +47,23 @@ abstract class AbstractTransport implements NotificationTransportInterface {
      * @param Notification $notification
      * @return bool
      */
-    public function send(string $message, string $to, Notification $notification = null) : bool
+    public function send(string $message, array $to, Notification $notification = null) : bool
     {
                 
+    }
+    
+    /**
+     * Get a sub directory class
+     * 
+     * e.g. SMSTransport\$nameSMSTransport
+     * @param string $name
+     * @return string
+     */
+    protected function getSubclassName(string $name) : string
+    {
+        $parts = explode("\\", get_called_class());
+        $class = end($parts);
+        
+        return sprintf("%s\\%s%s",$class, $name, $class);
     }
 }

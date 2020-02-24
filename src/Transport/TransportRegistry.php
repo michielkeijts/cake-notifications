@@ -18,6 +18,7 @@ use BadMethodCallException;
 use Cake\Core\App;
 use Cake\Core\ObjectRegistry;
 use RuntimeException;
+use CakeNotifications\Transport\AbstractTransport;
 
 /**
  * An object registry for mailer transports.
@@ -86,7 +87,7 @@ class TransportRegistry extends ObjectRegistry
         }
 
         throw new RuntimeException(
-            'Mailer transports must use Cake\Mailer\AbstractTransport as a base class.'
+            'Notification transports must use CakeNotifications\Transport\AbstractTransport as a base class.'
         );
     }
 

@@ -3,10 +3,13 @@
  * Configuration file for the Notifications Plugin. Or include this in app.php
  */
 return [
-	'Notifications' => [
+	'CakeNotifications' => [
         'Transport' => [
             'Slack' =>  [
-                'senderFunction' => false // use built in client, define SLACK_WEBHOOK for this
+                'default' => [
+                    'provider' => "Simple",
+                    'webhook' => env('SLACK_WEBHOOK',"")
+                ]
             ],
             'Email' =>  [
                 'senderFunction' => false // use built in client
@@ -14,8 +17,12 @@ return [
             'Watsapp' =>  [
                 'senderFunction' => false // not implemented
             ],
-            'SMS' =>  [
-                'senderFunction' => "MessagebirdSMSTransport::send"
+            'Sms' =>  [
+                'default' => [
+                    'provider' => "Messagebird",
+                    'originator' => 'MessageBird', 
+                    'key' => env('MESSAGEBIRD_API_KEY', FALSE)
+                ]
             ]
         ],
 	]

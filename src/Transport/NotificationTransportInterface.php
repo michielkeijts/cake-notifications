@@ -16,6 +16,6 @@ use CakeNotifications\Model\Entity\Notification;
  */
 interface NotificationTransportInterface {
 
-    public function send(string $message, string $to, Notification $notification = null) : bool;
+    public function send(string $message, array $to, Notification $notification = null) : bool;
     
 }

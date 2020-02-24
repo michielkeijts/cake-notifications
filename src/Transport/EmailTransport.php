@@ -24,9 +24,9 @@ class EmailTransport extends AbstractTransport {
      * @param Notification $notification
      * @return bool
      */
-    public function send(string $message, string $to, Notification $notification = null) : bool
+    public function send(string $message, array $to, Notification $notification = null) : bool
     {
-        $email = new Email($notification->options['email_config']);
+        $email = new Email($notification->config['email']);
         
         $email
             ->setTo($to)
@@ -34,6 +34,6 @@ class EmailTransport extends AbstractTransport {
             ->setSubject($notification->subject)
             ->viewBuilder()->setTemplate($notification->template);
         
-        return $email->send();
+        return !empty($email->send());
     }
 }
