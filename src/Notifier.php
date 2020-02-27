@@ -12,6 +12,8 @@ use Cake\ORM\TableRegistry;
 use Exception;
 use Cake\Core\Configure;
 use CakeNotifications\Transport\AbstractTransport;
+use Cake\Utility\Hash;
+use CakeNotifications\Model\Table\NotificationsTable;
 
 class Notifier {
    
@@ -31,9 +33,13 @@ class Notifier {
             } 
             
             foreach ($recipients as $recipient) {
-                $transport->send($notification->message, [$recipient], $notification);
+               $transport->send($notification->body, [$recipient], $notification);
             }
         }
+        
+        $notification->sent = time();
+        
+        static::getNotificationsTable()->save($notification);
     }
     
     /**
@@ -44,10 +50,8 @@ class Notifier {
      */
     public static function create(string $message, array $options = []) : Notification
     {
-        $notification = new Notification();
-        
-        $notification->message = $message;
-        
+        $notification = static::getNotificationsTable()->create($message, $options);
+                
         return $notification;        
     }
     
@@ -62,5 +66,64 @@ class Notifier {
         $config = Configure::read($config_key, []);
         
         return TransportFactory::get($transport, $config);
+    }
+    
+    /**
+     * Get a filled user property => $transport array.
+     * 
+     * Makes it easy to create a username list for notifications
+     * 
+     * For example:
+     * 
+     * [ 
+     *  username1.id => $transport,
+     *  username2.slack.user.profile.phone => $transport
+     * ]
+     * 
+     * will return as
+     * 
+     * [ 
+     *  1 => $transport,
+     *  +3112345 => $transport
+     * ]
+     * @param array $simpleRecipients
+     * @return array
+     */
+    public static function fillUserInfoFor(array $simpleRecipients) : array
+    {
+        $Users = TableRegistry::getTableLocator()->get('Users');
+        $lastUser = null;
+        $recipients = [];
+        
+        foreach ($simpleRecipients as $userpath => $transport) {
+            $paths = explode('.', $userpath);
+            $username = array_shift($paths);
+            $property = array_shift($paths);
+            
+            if (empty($lastUser) || strtolower($lastUser->username) != strtolower($username)) {
+                $lastUser = $Users->findByUsername($username)->firstOrFail();
+            }
+            
+            $key = $lastUser->get($property);
+            if (count($paths) > 2) {
+                $data = $lastUser->get($property);
+                if (!is_array($data)) {
+                    continue;
+                }
+                $key = Hash::get($lastUser->get($property), implode('.', $paths));
+            }
+            $recipients[$key] = $transport;
+        }
+        
+        return $recipients;
+    }
+    
+    /**
+     * 
+     * @return NotificationsTable
+     */
+    public static function getNotificationsTable() : NotificationsTable
+    {
+        return TableRegistry::getTableLocator()->get('CakeNotifications.Notifications');
     }
 }
