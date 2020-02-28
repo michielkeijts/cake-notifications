@@ -31,7 +31,7 @@ class EmailTransport extends AbstractTransport {
         $email
             ->setTo($to)
             ->setEmailFormat('both')
-            ->setSubject($notification->subject)
+            ->setSubject($notification->name)
             ->viewBuilder()->setTemplate($notification->template);
         
         return !empty($email->send());

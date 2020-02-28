@@ -101,7 +101,11 @@ class Notifier {
             $property = array_shift($paths);
             
             if (empty($lastUser) || strtolower($lastUser->username) != strtolower($username)) {
-                $lastUser = $Users->findByUsername($username)->firstOrFail();
+                if (is_numeric($username)) {
+                    $lastUser = $Users->get($username);
+                } else {
+                    $lastUser = $Users->findByUsername($username)->firstOrFail();
+                }
             }
             
             $key = $lastUser->get($property);

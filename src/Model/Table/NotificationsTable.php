@@ -124,17 +124,28 @@ class NotificationsTable extends Table
     
     /**
      * Creates a notification
+     * $options[
+     *  'name' => subject of notification
+     *  'recipients' => list of recipients (address=>transport)
+     * ];
+     * 
      * @param string $message
      * @param array $options
      * @return Notification
      */
     public function create(string $message, array $options = []) : Notification
     {
+        $options = $options + [
+            'name'          => 'New Notification',
+            'recipients'    => []
+        ];
+        
         $notification = new Notification();
         
         $notification->body = $message;
+        $notification->name = $options['name'];
         
-        if (isset($options['recipients']) && is_array($options['recipients'])) {
+        if (is_array($options['recipients'])) {
             foreach ($options['recipients'] as $address=>$transport) {
                 $notification->addRecipient($address, $transport);
             }
