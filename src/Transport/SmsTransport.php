@@ -19,7 +19,7 @@ use Cake\Core\Configure;
 class SmsTransport extends AbstractTransport {
     
     protected $_defaultConfig = [
-        'sendCombined' => FALSE
+        'sendCombined' => TRUE
     ];
     
     /**
