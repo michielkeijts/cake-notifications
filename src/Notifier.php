@@ -24,11 +24,13 @@ class Notifier {
      */
     public static function send(Notification $notification, array $options = [])
     {
+        static::getNotificationsTable()->save($notification);
+        
         foreach ($notification->recipients as $transport=>$recipients) {
             $transport = static::getTransport(ucfirst($transport));
             
             if ($transport->getConfig('sendCombined')) {
-                $transport->send($notification->message, $recipients, $notification);
+                $transport->send($notification->body, $recipients, $notification);
                 continue;
             } 
             
