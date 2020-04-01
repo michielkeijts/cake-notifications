@@ -37,7 +37,6 @@ class BrowserTransport extends AbstractTransport {
             'parent_id' => reset($to)
         ]);
         
-        
         $dataobject->data = $notification;
         
         return !empty($this->getDataobjectsTable()->save($dataobject));
