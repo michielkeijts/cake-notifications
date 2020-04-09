@@ -79,7 +79,8 @@ class Notifier {
      * 
      * [ 
      *  username1.id => $transport,
-     *  username2.slack.user.profile.phone => $transport
+     *  username2.slack.user.profile.phone => $transport,
+     *  %ALL_USERS%.id => $transport (Special variable)
      * ]
      * 
      * will return as
@@ -102,23 +103,31 @@ class Notifier {
             $username = array_shift($paths);
             $property = array_shift($paths);
             
-            if (empty($lastUser) || strtolower($lastUser->username) != strtolower($username)) {
-                if (is_numeric($username)) {
-                    $lastUser = $Users->get($username);
-                } else {
-                    $lastUser = $Users->findByUsername($username)->firstOrFail();
+            if ($username == '%ALL_USERS%') {
+                $users = $Users->find();
+            } else {
+                if (empty($lastUser) || strtolower($lastUser->username) != strtolower($username)) {
+                    if (is_numeric($username)) {
+                        $lastUser = $Users->get($username);
+                    } else {
+                        $lastUser = $Users->findByUsername($username)->firstOrFail();
+                    }
                 }
+                
+                $users = [$lastUser];
             }
             
-            $key = $lastUser->get($property);
-            if (count($paths) > 2) {
-                $data = $lastUser->get($property);
-                if (!is_array($data)) {
-                    continue;
+            foreach ($users as $user) {
+                $key = $user->get($property);
+                if (count($paths) > 2) {
+                    $data = $user->get($property);
+                    if (!is_array($data)) {
+                        continue;
+                    }
+                    $key = Hash::get($user->get($property), implode('.', $paths));
                 }
-                $key = Hash::get($lastUser->get($property), implode('.', $paths));
+                $recipients[$key] = $transport;
             }
-            $recipients[$key] = $transport;
         }
         
         return $recipients;

@@ -9,6 +9,7 @@ namespace CakeNotifications\Transport;
 use CakeNotifications\Model\Entity\Notification;
 use CakeNotifications\Transport\AbstractTransport;
 use CakeApiConnector\Model\Table\DataobjectsTable;
+use CakeApiConnector\Model\Entity\Dataobject;
 use Cake\ORM\TableRegistry;
 use App\Model\Entity\User;
 
@@ -34,7 +35,8 @@ class BrowserTransport extends AbstractTransport {
             'entity' => Notification::class,
             'entity_id' => $notification->id,
             'parent_model' => User::class,
-            'parent_id' => reset($to)
+            'parent_id' => reset($to),
+            'runner_status' => Dataobject::STATUS_WAITING
         ]);
         
         $dataobject->data = $notification;
@@ -44,6 +46,6 @@ class BrowserTransport extends AbstractTransport {
     
     private function getDataobjectsTable() : DataobjectsTable
     {
-        return TableRegistry::getTableLocator()->get('CakeApiConnector.Dataobjects');
+        return TableRegistry::getTableLocator()->get('Dataobjects');
     }
 }
