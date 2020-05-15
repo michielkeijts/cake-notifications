@@ -33,7 +33,7 @@ class TransportRegistry extends ObjectRegistry
      * @param string|\Cake\Mailer\AbstractTransport $class Partial classname to resolve or transport instance.
      * @return string|false Either the correct classname or false.
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName(string $class): ?string
     {
         if (is_object($class)) {
             return $class;
@@ -45,32 +45,32 @@ class TransportRegistry extends ObjectRegistry
     }
 
     /**
-     * Throws an exception when a cache engine is missing.
+     * Throw an exception when the requested object name is missing.
      *
-     * Part of the template method for Cake\Core\ObjectRegistry::load()
-     *
-     * @param string $class The classname that is missing.
-     * @param string $plugin The plugin the cache is missing in.
+     * @param string $class The class that is missing.
+     * @param string|null $plugin The plugin $class is missing from.
      * @return void
-     * @throws \BadMethodCallException
+     * @throws \Exception
      */
-    protected function _throwMissingClassError($class, $plugin)
+    protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
         throw new BadMethodCallException(sprintf('Notification transport %s is not available.', $class));
     }
 
     /**
-     * Create the mailer transport instance.
+     * Create an instance of a given classname.
      *
-     * Part of the template method for Cake\Core\ObjectRegistry::load()
+     * This method should construct and do any other initialization logic
+     * required.
      *
-     * @param string|\Cake\Mailer\AbstractTransport $class The classname or object to make.
+     * @param string|object $class The class to build.
      * @param string $alias The alias of the object.
-     * @param array $config An array of settings to use for the cache engine.
-     * @return \Cake\Mailer\AbstractTransport The constructed transport class.
-     * @throws \RuntimeException when an object doesn't implement the correct interface.
+     * @param array $config The Configuration settings for construction
+     * @return object
+     * @psalm-param string|TObject $class
+     * @psalm-return TObject
      */
-    protected function _create($class, $alias, $config)
+    protected function _create($class, string $alias, array $config)
     {
         $instance = null;
 
@@ -89,16 +89,5 @@ class TransportRegistry extends ObjectRegistry
         throw new RuntimeException(
             'Notification transports must use CakeNotifications\Transport\AbstractTransport as a base class.'
         );
-    }
-
-    /**
-     * Remove a single adapter from the registry.
-     *
-     * @param string $name The adapter name.
-     * @return void
-     */
-    public function unload($name)
-    {
-        unset($this->_loaded[$name]);
     }
 }
