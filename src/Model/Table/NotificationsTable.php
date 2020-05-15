@@ -6,7 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use CakeNotifications\Model\Entity\Notification;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 
 /**
  * Notifications Model
@@ -26,7 +26,8 @@ use Cake\Database\Schema\TableSchema;
  */
 class NotificationsTable extends Table
 {
-    public function _initializeSchema(TableSchema $schema) {
+    public function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    {
         $schema = parent::_initializeSchema($schema);
         
         $schema->setColumnType('config',  'json');
@@ -41,7 +42,7 @@ class NotificationsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -62,7 +63,7 @@ class NotificationsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
