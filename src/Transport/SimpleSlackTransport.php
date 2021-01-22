@@ -20,7 +20,7 @@ class SimpleSlackTransport extends AbstractTransport {
     private $client;
     
     /**
-     * Sends an Message bird SMS
+     * Simple Slack uses a webhook
      * @param string $message
      * @param string $to
      * @param \CakeNotifications\Transport\SMSTransport\Notification $notification
