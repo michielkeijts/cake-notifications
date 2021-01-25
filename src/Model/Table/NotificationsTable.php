@@ -147,8 +147,13 @@ class NotificationsTable extends Table
         $notification->name = $options['name'];
         
         if (is_array($options['recipients'])) {
-            foreach ($options['recipients'] as $address=>$transport) {
-                $notification->addRecipient($address, $transport);
+            foreach ($options['recipients'] as $address=>$transports) {
+                if (!is_array($transports)) {
+                    $transports = [$transports];
+                }
+                foreach ($transports as $transport) {
+                    $notification->addRecipient($address, $transport);
+                }
             }
         }
         

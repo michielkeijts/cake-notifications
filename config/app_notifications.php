@@ -7,22 +7,33 @@ return [
         'Transport' => [
             'Slack' =>  [
                 'default' => [
-                    'provider' => "Simple",
+                    'provider' => "Bot",
+                    'auth' => env('SLACK_BOT_TOKEN',""),
+                    'as_user' => TRUE //default
+                ],
+                'UserAddressProperty' => 'slack_id'
+            ],
+            'SlackWebhook' =>  [
+                'default' => [
+                    'provider' => "Webook",
                     'webhook' => env('SLACK_WEBHOOK',"")
                 ]
             ],
             'Email' =>  [
-                'senderFunction' => false // use built in client
+                'senderFunction' => false, // use built in client,
+                'UserAddressProperty' => 'email'
             ],
             'Watsapp' =>  [
-                'senderFunction' => false // not implemented
+                'senderFunction' => false, // not implemented
+                'UserAddressProperty' => 'phone'
             ],
             'Sms' =>  [
                 'default' => [
-                    'provider' => "Messagebird",
-                    'originator' => 'MessageBird', 
+                    'provider' => "MessageBird",
+                    'originator' => 'BlogicMedia', 
                     'key' => env('MESSAGEBIRD_API_KEY', FALSE)
-                ]
+                ],
+                'UserAddressProperty' => 'phone'
             ]
         ],
 	]

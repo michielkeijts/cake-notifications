@@ -8,6 +8,7 @@ namespace CakeNotifications\Transport;
 
 use CakeNotifications\Model\Entity\Notification;
 use CakeNotifications\Transport\AbstractTransport;
+use CakeNotifications\Transport\Provider\ProviderFactory;
 use Cake\Core\Configure;
 
 /**
@@ -29,9 +30,12 @@ class SlackTransport extends AbstractTransport {
         $transporterConfig = Configure::read('CakeNotifications.Transport.Slack.' . $notification->config['slack']);
         
         if ($transporterConfig['provider']) {
-            $transporter = TransportFactory::get($transporterConfig['provider'] . 'Slack', $transporterConfig);
+            $provider = ProviderFactory::get('Slack'.$transporterConfig['provider'], $transporterConfig);
             
-            return $transporter->send($message, $to, $notification);
+            // in case multiple $to, send individually, but argument needs to be array
+            foreach ($to as $current_recipient) {
+                return $provider->send($message, [$current_recipient], $notification);
+            }
         } 
         
         return false;

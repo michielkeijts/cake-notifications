@@ -8,7 +8,6 @@ namespace CakeNotifications\Transport;
 
 use CakeNotifications\Model\Entity\Notification;
 use CakeNotifications\Transport\AbstractTransport;
-use CakeNotifications\Transport\TransportFactory;
 use Cake\Core\Configure;
 use CakeNotifications\Transport\Provider\ProviderFactory;
 
@@ -17,11 +16,7 @@ use CakeNotifications\Transport\Provider\ProviderFactory;
  *
  * @author michiel
  */
-class SmsTransport extends AbstractTransport {
-    
-    protected $_defaultConfig = [
-        'sendCombined' => TRUE
-    ];
+class SlackWebhookTransport extends AbstractTransport {
     
     /**
      * Abstract send method to send the notification to a single recipient
@@ -32,15 +27,14 @@ class SmsTransport extends AbstractTransport {
      */
     public function send(string $message, array $to, Notification $notification = null) : bool
     {
-        $transporterConfig = Configure::read('CakeNotifications.Transport.Sms.' . $notification->config['sms']);
+        $transporterConfig = Configure::read('CakeNotifications.Transport.SlackWebhook.' . $notification->config['slack']);
         
         if ($transporterConfig['provider']) {
-            $provider = ProviderFactory::get('Sms'.$transporterConfig['provider'], $transporterConfig);
+            $provider = ProviderFactory::get('Slack'.$transporterConfig['provider'], $transporterConfig);
             
             return $provider->send($message, $to, $notification);
         } 
         
         return false;
-    }
-
+    } 
 }

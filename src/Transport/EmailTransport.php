@@ -8,7 +8,9 @@ namespace CakeNotifications\Transport;
 
 use CakeNotifications\Model\Entity\Notification;
 use CakeNotifications\Transport\AbstractTransport;
-use Cake\Mailer\Email;
+use Cake\Mailer\Mailer;
+use Cake\Core\Plugin;
+use Cake\ORM\TableRegistry;
 
 /**
  * Description of SMSTransport
@@ -26,14 +28,36 @@ class EmailTransport extends AbstractTransport {
      */
     public function send(string $message, array $to, Notification $notification = null) : bool
     {
-        $email = new Email($notification->config['email']);
+        $mailer = new Mailer('default');
         
-        $email
-            ->setTo($to)
-            ->setEmailFormat('both')
-            ->setSubject($notification->name)
-            ->viewBuilder()->setTemplate($notification->template);
+        $mailer
+                ->addTo($to)
+                ->setEmailFormat('both')
+                ->setSubject($notification->name)
+                ->setViewVars('content', nl2br($message))
+                ->viewBuilder()
+                ->setTemplate($notification->template);
         
-        return !empty($email->send());
+        if (Plugin::isLoaded('Queue')) {
+            return $this->sendAsQueuedJob($mailer);
+        }
+        
+        return !empty($mailer->send());
+    }
+    
+    /**
+     * Send as a Queued Job instead of direct sending
+     * @param Mailer $mailer
+     * @return bool
+     */
+    public function sendAsQueuedJob(Mailer $mailer) : bool
+    {
+        TableRegistry::getTableLocator()->get('Queue.QueuedJobs')->createJob(
+            'Email',
+            ['settings' => $mailer],
+            ['group' => 'email']
+        );
+        
+        return TRUE;
     }
 }

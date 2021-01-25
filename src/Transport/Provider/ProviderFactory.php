@@ -1,0 +1,110 @@
+<?php
+/**
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @since         3.7.0
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
+ */
+namespace CakeNotifications\Transport\Provider;
+
+use Cake\Core\StaticConfigTrait;
+use InvalidArgumentException;
+use CakeNotifications\Transport\Provider\ProviderRegistry;
+
+/**
+ * Factory class for generating email transport instances.
+ */
+class ProviderFactory
+{
+    use StaticConfigTrait;
+
+    /**
+     * Transport Registry used for creating and using transport instances.
+     *
+     * @var \CakeNotifications\Transport\TransportRegistry
+     */
+    protected static $_registry;
+
+    /**
+     * Returns the Transport Registry used for creating and using transport instances.
+     *
+     * @return \Cake\Mailer\ProviderRegistry
+     */
+    public static function getRegistry() : ProviderRegistry
+    {
+        if (!static::$_registry) {
+            static::$_registry = new ProviderRegistry();
+        }
+
+        return static::$_registry;
+    }
+
+    /**
+     * Sets the Transport Registry instance used for creating and using transport instances.
+     *
+     * Also allows for injecting of a new registry instance.
+     *
+     * @param \CakeNotifications\Transport\TransportRegistry $registry Injectable registry object.
+     * @return void
+     */
+    public static function setRegistry(ProviderRegistry $registry)
+    {
+        static::$_registry = $registry;
+    }
+
+    /**
+     * Finds and builds the instance of the required tranport class.
+     *
+     * @param string $name Name of the config array that needs a tranport instance built
+     * @return void
+     * @throws \InvalidArgumentException When a tranport cannot be created.
+     */
+    protected static function _buildProvider($name)
+    {
+        if (!isset(static::$_config[$name])) {
+            throw new InvalidArgumentException(
+                sprintf('The "%s" provider configuration does not exist', $name)
+            );
+        }
+
+        if (is_array(static::$_config[$name]) && empty(static::$_config[$name]['className'])) {
+            throw new InvalidArgumentException(
+                sprintf('Provider config "%s" is invalid, the required `className` option is missing', $name)
+            );
+        }
+
+        static::getRegistry()->load($name, static::$_config[$name]);
+    }
+
+    /**
+     * Get transport instance.
+     *
+     * @param string $name Config name.
+     * @param array $config (default [])
+     * @return \Cake\Transport\AbstractTransport
+     */
+    public static function get($name, array $config = [])
+    {
+        $registry = static::getRegistry();
+
+        if (isset($registry->{$name})) {
+            return $registry->{$name};
+        }
+
+        $config = $config + [
+            'className' => 'CakeNotifications.'.$name
+        ];
+        
+        static::setConfig($name, $config);
+        static::_buildProvider($name);
+
+        return $registry->{$name};
+    }
+}

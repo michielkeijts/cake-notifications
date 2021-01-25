@@ -1,24 +1,23 @@
 <?php
 /**
- * Description of MessageBirdSMSTransport
+ * Description of SmsMessageBirdProvider
  *
  * @author michiel
  */
 
-namespace CakeNotifications\Transport;
+namespace CakeNotifications\Transport\Provider;
 
 use CakeNotifications\Transport\AbstractTransport;
 use MessageBird\Client;
 use CakeNotifications\Model\Entity\Notification;
 use MessageBird\Objects\Message;
-use Cake\Core\Configure;
 
 /**
- * Description of MessageBirdSMSTransport
+ * Description of SmsMessageBirdProvider
  *
  * @author michiel
  */
-class MessageBirdSmsTransport extends AbstractTransport {
+class SmsMessageBirdProvider extends AbstractTransport {
     
     /**
      * Sends an Message bird SMS
