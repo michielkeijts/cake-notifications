@@ -16,6 +16,7 @@ use Cake\Utility\Hash;
 use CakeNotifications\Model\Table\NotificationsTable;
 use CakeNotifications\Helper\NotificationTemplateParser;
 use Cake\Utility\Inflector;
+use Cake\I18n\FrozenTime;
 
 class Notifier {
    
@@ -40,7 +41,7 @@ class Notifier {
             }
         }
         
-        $notification->sent = time();
+        $notification->sent = new FrozenTime();
         
         static::getNotificationsTable()->save($notification);
     }

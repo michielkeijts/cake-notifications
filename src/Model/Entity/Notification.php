@@ -74,7 +74,15 @@ class Notification extends Entity
                 'email' => 'default',
                 'sms' => 'default',
                 'whatsapp' => 'default',
-                'slack' => 'default'
+                'slack' => 'default',
+                'browser' => 'default',
+                'throttleSeconds' => [
+                    'email'     => 0,
+                    'sms'       => 0,
+                    'slack'     => 0,
+                    'whatsapp'  => 0,
+                    'browser'   => 0    
+                ]  
             ],
             "subject" => "Subject Of Message"
         ];
@@ -100,5 +108,13 @@ class Notification extends Entity
         }
         
         array_push($this->recipients[$transport], $address);
+    }
+    
+    /**
+     * Get a list of registered transports
+     */
+    public function getTransports() : array
+    {
+        return ['email','sms','slack','whatsapp','browser'];
     }
 }
