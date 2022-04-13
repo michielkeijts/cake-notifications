@@ -53,7 +53,7 @@ class EmailTransport extends AbstractTransport {
     public function sendAsQueuedJob(Mailer $mailer) : bool
     {
         TableRegistry::getTableLocator()->get('Queue.QueuedJobs')->createJob(
-            'Email',
+            'Queue.Email',
             ['settings' => $mailer],
             ['group' => 'email']
         );
