@@ -13,7 +13,7 @@
 		}
 	],
 	"require": {
-		"php": ">=7.1",
+		"php": ">=7.3",
 		"cakephp/cakephp": ">=3.7",
         "symfony/yaml": ">=5.1"
 	},
