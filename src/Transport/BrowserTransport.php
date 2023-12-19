@@ -7,6 +7,7 @@
 namespace CakeNotifications\Transport;
 
 use CakeNotifications\Model\Entity\Notification;
+use CakeNotifications\Model\Table\MessagesTable;
 use CakeNotifications\Transport\AbstractTransport;
 use CakeApiConnector\Model\Table\DataobjectsTable;
 use CakeApiConnector\Model\Entity\Dataobject;
@@ -41,24 +42,26 @@ class BrowserTransport extends AbstractTransport {
 
             $provider = ProviderFactory::get($provider, $config);
 
-            return $provider->send($message, $to, $notification);
+            $msg = $provider->send($message, $to, $notification);
+
+            if (!($transporterConfig['copyInDatabase'] ?? FALSE)) {
+                return $msg;
+            }
         }
 
-        $dataobject = $this->getDataobjectsTable()->newEntity([
-            'entity' => Notification::class,
-            'entity_id' => $notification->id,
-            'parent_model' => User::class,
-            'parent_id' => reset($to),
-            'runner_status' => Dataobject::STATUS_WAITING
-        ]);
+        foreach ($to as $user_id) {
+            $message = $this->getMessagesTable()->newEntity([
+                'name' => $notification->name,
+                'body' => $notification->body,
+                'created_by' => $user_id
+            ]);
+        }
 
-        $dataobject->data = $notification;
-
-        return !empty($this->getDataobjectsTable()->save($dataobject));
+        return !empty($this->getMessagesTable()->save($message));
     }
 
-    private function getDataobjectsTable() : DataobjectsTable
+    private function getMessagesTable() : MessagesTable
     {
-        return TableRegistry::getTableLocator()->get('Dataobjects');
+        return TableRegistry::getTableLocator()->get('CakeNotifications.Messages');
     }
 }
