@@ -33,7 +33,7 @@ class MessagesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('messages');
+        $this->setTable('cake_notifications_messages');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 

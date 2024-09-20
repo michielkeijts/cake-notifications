@@ -13,7 +13,7 @@ use Exception;
  *
  * @property int $id
  * @property int|null $site_id
- * @property string|null $language
+ * @property string|null $locale
  * @property string|null $name
  * @property string $body
  * @property string|null $recipients
@@ -42,7 +42,7 @@ class Notification extends Entity
      */
     protected $_accessible = [
         'site_id' => true,
-        'language' => true,
+        'locale' => true,
         'name' => true,
         'body' => true,
         'recipients' => true,
@@ -57,7 +57,7 @@ class Notification extends Entity
         'deleted_by' => true,
         'site' => true,
     ];
-    
+
     /**
      * Create with default options
      * @param array $properties
@@ -81,15 +81,15 @@ class Notification extends Entity
                     'sms'       => 0,
                     'slack'     => 0,
                     'whatsapp'  => 0,
-                    'browser'   => 0    
-                ]  
+                    'browser'   => 0
+                ]
             ],
             "subject" => "Subject Of Message"
         ];
-        
+
         return parent::__construct($properties, $options);
     }
-    
+
     /**
      * $transport is full classname, or 'SMS','Email','Slack','WhatsApp
      * @param string $address
@@ -98,18 +98,18 @@ class Notification extends Entity
     public function addRecipient(string $address, string $transport)
     {
         $class = ucfirst($transport);
-        
-        if (!is_array($this->recipients)) { 
+
+        if (!is_array($this->recipients)) {
             $this->recipients = [];
         }
-        
+
         if (!isset($this->recipients[$transport])) {
             $this->recipients[$transport] = [];
         }
-        
+
         array_push($this->recipients[$transport], $address);
     }
-    
+
     /**
      * Get a list of registered transports
      */

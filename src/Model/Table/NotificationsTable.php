@@ -29,13 +29,13 @@ class NotificationsTable extends Table
     public function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema = parent::_initializeSchema($schema);
-        
+
         $schema->setColumnType('config',  'json');
         $schema->setColumnType('recipients',  'json');
-        
+
         return $schema;
     }
-    
+
     /**
      * Initialize method
      *
@@ -46,7 +46,7 @@ class NotificationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('notifications');
+        $this->setTable('cake_notifications_notifications');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
@@ -70,9 +70,9 @@ class NotificationsTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('language')
-            ->maxLength('language', 10)
-            ->allowEmptyString('language');
+            ->scalar('locale')
+            ->maxLength('locale', 10)
+            ->allowEmptyString('locale');
 
         $validator
             ->scalar('name')
@@ -122,14 +122,14 @@ class NotificationsTable extends Table
 
         return $validator;
     }
-    
+
     /**
      * Creates a notification
      * $options[
      *  'name' => subject of notification
      *  'recipients' => list of recipients (address=>transport)
      * ];
-     * 
+     *
      * @param string $message
      * @param array $options
      * @return Notification
@@ -140,12 +140,12 @@ class NotificationsTable extends Table
             'name'          => 'New Notification',
             'recipients'    => []
         ];
-        
+
         $notification = new Notification();
-        
+
         $notification->body = $message;
         $notification->name = $options['name'];
-        
+
         if (is_array($options['recipients'])) {
             foreach ($options['recipients'] as $address=>$transports) {
                 if (!is_array($transports)) {
@@ -156,7 +156,7 @@ class NotificationsTable extends Table
                 }
             }
         }
-        
-        return $this->save($notification);        
+
+        return $this->save($notification);
     }
 }
