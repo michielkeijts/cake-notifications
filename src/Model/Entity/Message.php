@@ -29,7 +29,7 @@ class Message extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'name' => true,
         'group_id' => true,
         'message_read' => true,
