@@ -15,6 +15,6 @@ class RenameTable extends AbstractMigration
     public function change()
     {
         $this->table('messages')->rename('cake_notifications_messages')->update();
-        $this->table('notifications')->rename('cake_notifications_notifications')->renameColumn('language','locale')->update();
+        $this->table('notifications')->rename('cake_notifications_notifications')->update();
     }
 }

@@ -60,17 +60,14 @@ class TransportRegistry extends ObjectRegistry
     /**
      * Create an instance of a given classname.
      *
-     * This method should construct and do any other initialization logic
-     * required.
-     *
-     * @param string|object $class The class to build.
-     * @param string $alias The alias of the object.
-     * @param array $config The Configuration settings for construction
-     * @return object
-     * @psalm-param string|TObject $class
-     * @psalm-return TObject
+     *  This method should construct and do any other initialization logic
+     *  required.
+     * @param object|string $class
+     * @param string $alias
+     * @param array $config
+     * @return object|\CakeNotifications\Transport\AbstractTransport
      */
-    protected function _create($class, string $alias, array $config)
+    protected function _create(object|string $class, string $alias, array $config): object
     {
         $instance = null;
 

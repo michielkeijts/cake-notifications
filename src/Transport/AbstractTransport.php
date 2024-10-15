@@ -1,7 +1,7 @@
 <?php
 /*
  * @copyright (C) 2020 Michiel Keijts, Normit
- * 
+ *
  */
 
 namespace CakeNotifications\Transport;
@@ -16,14 +16,14 @@ use Cake\Core\InstanceConfigTrait;
  */
 abstract class AbstractTransport implements NotificationTransportInterface {
     use InstanceConfigTrait;
-    
+
     /**
      * Default config for this class
      *
      *  'sendCombined' => TRUE
      * Some transports make it easier to send as one, for example, one sms.
      * Email is preferred to be send individually
-     * 
+     *
      * @var array
      */
     protected $_defaultConfig = [
@@ -39,22 +39,22 @@ abstract class AbstractTransport implements NotificationTransportInterface {
     {
         $this->setConfig($config);
     }
-    
+
     /**
      * Abstract send method to send the notification to a single recipient
-     * @param string $message 
-     * @param string $to 
+     * @param string $message
+     * @param string $to
      * @param Notification $notification
      * @return bool
      */
     public function send(string $message, array $to, Notification $notification = null) : bool
     {
-                
+        return FALSE;
     }
-    
+
     /**
      * Get a sub directory class
-     * 
+     *
      * e.g. SMSTransport\$nameSMSTransport
      * @param string $name
      * @return string
@@ -63,7 +63,7 @@ abstract class AbstractTransport implements NotificationTransportInterface {
     {
         $parts = explode("\\", get_called_class());
         $class = end($parts);
-        
+
         return sprintf("%s\\%s%s",$class, $name, $class);
     }
 }

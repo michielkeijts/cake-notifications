@@ -2,7 +2,7 @@
 namespace CakeNotifications\Model\Entity;
 
 use Cake\ORM\Entity;
-use CakeNotifications\Transport\SMSTransport;
+use CakeNotifications\Transport\SmsTransport;
 use CakeNotifications\Transport\SlackTransport;
 use CakeNotifications\Transport\EmailTransport;
 use CakeNotifications\Transport\WatsappTransport;
@@ -87,7 +87,7 @@ class Notification extends Entity
             "subject" => "Subject Of Message"
         ];
 
-        return parent::__construct($properties, $options);
+        parent::__construct($properties, $options);
     }
 
     /**

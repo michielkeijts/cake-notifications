@@ -26,14 +26,11 @@ use Cake\Database\Schema\TableSchemaInterface;
  */
 class NotificationsTable extends Table
 {
-    public function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema = parent::_initializeSchema($schema);
-
-        $schema->setColumnType('config',  'json');
-        $schema->setColumnType('recipients',  'json');
-
-        return $schema;
+        return parent::getSchema()
+            ->setColumnType('config',  'json')
+            ->setColumnType('recipients',  'json');
     }
 
     /**
